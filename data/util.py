@@ -38,6 +38,16 @@ async def init_database():
                 FOREIGN KEY (customer_id) REFERENCES customers (id)
             )
         """)
+        
+        await db.execute("""
+            CREATE TABLE IF NOT EXISTS sample_data_log (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                generation_date TEXT NOT NULL,
+                customer_count INTEGER NOT NULL,
+                policy_count INTEGER NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        """)
         await db.commit()
 
 
@@ -47,9 +57,10 @@ async def init_sample_data():
         # Clear existing data
         await db.execute("DELETE FROM policies")
         await db.execute("DELETE FROM customers")
+        await db.execute("DELETE FROM sample_data_log")
         
         # Reset auto-increment counters
-        await db.execute("DELETE FROM sqlite_sequence WHERE name IN ('customers', 'policies')")
+        await db.execute("DELETE FROM sqlite_sequence WHERE name IN ('customers', 'policies', 'sample_data_log')")
         
         # Insert sample customers
         sample_customers = [
@@ -118,7 +129,33 @@ async def init_sample_data():
             VALUES (?, ?, ?, ?, ?)
         """, sample_policies)
         
+        # Record sample data generation info
+        await db.execute("""
+            INSERT INTO sample_data_log (generation_date, customer_count, policy_count)
+            VALUES (?, ?, ?)
+        """, (today.isoformat(), len(sample_customers), len(sample_policies)))
+        
         await db.commit()
+
+
+async def ensure_fresh_sample_data():
+    """Check if sample data was generated today, regenerate if not."""
+    today = date.today()
+    async with await get_database() as db:
+        cursor = await db.execute("""
+            SELECT generation_date FROM sample_data_log 
+            ORDER BY created_at DESC LIMIT 1
+        """)
+        row = await cursor.fetchone()
+        
+        if row is None:
+            # No sample data exists, generate it
+            await init_sample_data()
+        else:
+            last_generation_date = date.fromisoformat(row[0])
+            if last_generation_date < today:
+                # Sample data is outdated, regenerate it
+                await init_sample_data()
 
 
 async def close_database():

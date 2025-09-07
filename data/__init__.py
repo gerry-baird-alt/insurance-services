@@ -1,4 +1,4 @@
-from .util import init_database, init_sample_data, get_database, close_database
+from .util import init_database, init_sample_data, get_database, close_database, ensure_fresh_sample_data
 from .customer_db import (
     create_customer,
     get_customer_by_id,
@@ -21,6 +21,7 @@ __all__ = [
     "init_sample_data",
     "get_database", 
     "close_database",
+    "ensure_fresh_sample_data",
     "create_customer",
     "get_customer_by_id",
     "get_customer_by_email", 
