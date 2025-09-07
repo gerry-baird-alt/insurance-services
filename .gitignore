@@ -6,7 +6,7 @@ __pycache__/
 *$py.class
 
 # project database
-van_rental.db
+insurance.db
 
 # env files
 .env
