@@ -19,18 +19,19 @@ async def get_customer_by_id(customer_id: int) -> Optional[Customer]:
     """Retrieve a customer by ID."""
     async with await get_database() as db:
         cursor = await db.execute("""
-            SELECT name, date_of_birth, email, address, state
+            SELECT id, name, date_of_birth, email, address, state
             FROM customers WHERE id = ?
         """, (customer_id,))
         row = await cursor.fetchone()
         if row:
             from datetime import date
             return Customer(
-                name=row[0],
-                date_of_birth=date.fromisoformat(row[1]),
-                email=row[2],
-                address=row[3],
-                state=row[4]
+                id=row[0],
+                name=row[1],
+                date_of_birth=date.fromisoformat(row[2]),
+                email=row[3],
+                address=row[4],
+                state=row[5]
             )
         return None
 
@@ -39,18 +40,19 @@ async def get_customer_by_email(email: str) -> Optional[Customer]:
     """Retrieve a customer by email."""
     async with await get_database() as db:
         cursor = await db.execute("""
-            SELECT name, date_of_birth, email, address, state
+            SELECT id, name, date_of_birth, email, address, state
             FROM customers WHERE email = ?
         """, (email,))
         row = await cursor.fetchone()
         if row:
             from datetime import date
             return Customer(
-                name=row[0],
-                date_of_birth=date.fromisoformat(row[1]),
-                email=row[2],
-                address=row[3],
-                state=row[4]
+                id=row[0],
+                name=row[1],
+                date_of_birth=date.fromisoformat(row[2]),
+                email=row[3],
+                address=row[4],
+                state=row[5]
             )
         return None
 
@@ -59,7 +61,7 @@ async def get_all_customers() -> List[Customer]:
     """Retrieve all customers."""
     async with await get_database() as db:
         cursor = await db.execute("""
-            SELECT name, date_of_birth, email, address, state
+            SELECT id, name, date_of_birth, email, address, state
             FROM customers
         """)
         rows = await cursor.fetchall()
@@ -67,11 +69,12 @@ async def get_all_customers() -> List[Customer]:
         for row in rows:
             from datetime import date
             customers.append(Customer(
-                name=row[0],
-                date_of_birth=date.fromisoformat(row[1]),
-                email=row[2],
-                address=row[3],
-                state=row[4]
+                id=row[0],
+                name=row[1],
+                date_of_birth=date.fromisoformat(row[2]),
+                email=row[3],
+                address=row[4],
+                state=row[5]
             ))
         return customers
 

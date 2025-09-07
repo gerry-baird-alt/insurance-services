@@ -7,6 +7,14 @@ from .customer_db import (
     update_customer,
     delete_customer
 )
+from .policy_db import (
+    create_policy,
+    get_policy_by_id,
+    get_all_policies,
+    get_policies_by_customer_id,
+    update_policy,
+    delete_policy
+)
 
 __all__ = [
     "init_database",
@@ -18,5 +26,11 @@ __all__ = [
     "get_customer_by_email", 
     "get_all_customers",
     "update_customer",
-    "delete_customer"
+    "delete_customer",
+    "create_policy",
+    "get_policy_by_id",
+    "get_all_policies",
+    "get_policies_by_customer_id",
+    "update_policy",
+    "delete_policy"
 ]
