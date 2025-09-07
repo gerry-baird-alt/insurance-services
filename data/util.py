@@ -1,6 +1,7 @@
 import aiosqlite
 import os
 from typing import Optional
+from datetime import date, timedelta
 
 DATABASE_PATH = "insurance.db"
 
@@ -56,7 +57,15 @@ async def init_sample_data():
             ("Sarah Johnson", "1990-03-22", "sarah.johnson@email.com", "456 Oak Ave", "Texas"),
             ("Michael Brown", "1978-11-08", "michael.brown@email.com", "789 Pine Rd", "New York"),
             ("Emily Davis", "1995-01-30", "emily.davis@email.com", "321 Elm St", "Florida"),
-            ("David Wilson", "1982-09-12", "david.wilson@email.com", "654 Maple Dr", "Illinois")
+            ("David Wilson", "1982-09-12", "david.wilson@email.com", "654 Maple Dr", "Illinois"),
+            ("Jessica Martinez", "1987-04-12", "jessica.martinez@email.com", "789 Houston St", "Texas"),
+            ("Robert Garcia", "1992-08-25", "robert.garcia@email.com", "234 Austin Ave", "Texas"),
+            ("Amanda Rodriguez", "1979-12-03", "amanda.rodriguez@email.com", "567 Dallas Blvd", "Texas"),
+            ("Christopher Lee", "1988-01-18", "christopher.lee@email.com", "890 San Antonio Way", "Texas"),
+            ("Michelle Thompson", "1993-07-07", "michelle.thompson@email.com", "345 Fort Worth Dr", "Texas"),
+            ("James Anderson", "1984-11-29", "james.anderson@email.com", "678 Cedar St", "Iowa"),
+            ("Lisa White", "1991-05-14", "lisa.white@email.com", "901 Oak Hill Rd", "Iowa"),
+            ("Daniel Miller", "1986-09-22", "daniel.miller@email.com", "432 Prairie View Dr", "Iowa")
         ]
         
         await db.executemany("""
@@ -64,18 +73,45 @@ async def init_sample_data():
             VALUES (?, ?, ?, ?, ?)
         """, sample_customers)
         
-        # Insert sample policies
-        sample_policies = [
-            (1, "2024-01-15", "2025-01-15", "bicycle", "450.00"),
-            (1, "2024-03-01", "2025-03-01", "pet", "320.00"),
-            (2, "2024-02-10", "2025-02-10", "boat", "1250.00"),
-            (2, "2024-06-01", "2025-06-01", "RV", "2100.00"),
-            (3, "2024-01-01", "2025-01-01", "equine", "890.00"),
-            (3, "2024-04-15", "2025-04-15", "bicycle", "380.00"),
-            (4, "2024-05-20", "2025-05-20", "pet", "295.00"),
-            (5, "2024-07-01", "2025-07-01", "boat", "1450.00"),
-            (5, "2024-08-15", "2025-08-15", "equine", "950.00")
+        # Calculate policy dates based on current date
+        today = date.today()
+        
+        # Create sample policies with start dates in the past (within 360 days)
+        policy_offsets = [
+            (1, -30, "bicycle", "450.00"),     # Started 30 days ago
+            (1, -45, "pet", "320.00"),         # Started 45 days ago
+            (2, -60, "boat", "1250.00"),       # Started 60 days ago
+            (2, -90, "RV", "2100.00"),         # Started 90 days ago
+            (3, -120, "equine", "890.00"),     # Started 120 days ago
+            (3, -150, "bicycle", "380.00"),    # Started 150 days ago
+            (4, -15, "pet", "295.00"),         # Started 15 days ago
+            (5, -75, "boat", "1450.00"),       # Started 75 days ago
+            (5, -100, "equine", "950.00"),     # Started 100 days ago
+            (6, -180, "RV", "1980.00"),        # Started 180 days ago
+            (6, -200, "pet", "275.00"),        # Started 200 days ago
+            (7, -5, "bicycle", "425.00"),      # Started 5 days ago
+            (7, -220, "boat", "1320.00"),      # Started 220 days ago
+            (8, -240, "equine", "825.00"),     # Started 240 days ago
+            (9, -25, "pet", "340.00"),         # Started 25 days ago
+            (9, -270, "bicycle", "395.00"),    # Started 270 days ago
+            (10, -50, "boat", "1380.00"),      # Started 50 days ago
+            (11, -300, "RV", "2250.00"),       # Started 300 days ago
+            (11, -320, "equine", "780.00"),    # Started 320 days ago
+            (12, -80, "pet", "310.00"),        # Started 80 days ago
+            (13, -350, "bicycle", "460.00"),   # Started 350 days ago
+            (13, -360, "boat", "1520.00")      # Started 360 days ago
         ]
+        
+        sample_policies = []
+        for customer_id, start_offset, product, premium in policy_offsets:
+            start_date = today + timedelta(days=start_offset)
+            end_date = start_date + timedelta(days=364)  # 364-day policies
+            sample_policies.append((customer_id, start_date.isoformat(), end_date.isoformat(), product, premium))
+        
+        # Add special policy for customer 2: started 344 days ago, ends 20 days in future
+        special_start = today + timedelta(days=-344)
+        special_end = today + timedelta(days=20)
+        sample_policies.append((2, special_start.isoformat(), special_end.isoformat(), "pet", "380.00"))
         
         await db.executemany("""
             INSERT INTO policies (customer_id, start_date, end_date, product, premium)
