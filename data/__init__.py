@@ -4,6 +4,7 @@ from .customer_db import (
     get_customer_by_id,
     get_customer_by_email,
     get_all_customers,
+    get_customers_by_state,
     update_customer,
     delete_customer
 )
@@ -26,6 +27,7 @@ __all__ = [
     "get_customer_by_id",
     "get_customer_by_email", 
     "get_all_customers",
+    "get_customers_by_state",
     "update_customer",
     "delete_customer",
     "create_policy",

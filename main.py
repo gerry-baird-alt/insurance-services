@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from typing import List, Optional
 from model import Customer, Policy
-from data import get_all_customers, get_all_policies, get_policy_by_id, get_policies_by_customer_id, init_database, init_sample_data, ensure_fresh_sample_data
+from data import get_all_customers, get_customers_by_state, get_all_policies, get_policy_by_id, get_policies_by_customer_id, init_database, init_sample_data, ensure_fresh_sample_data
 
 app = FastAPI()
 
@@ -38,3 +38,10 @@ async def get_customer_policies(customer_id: int):
     await ensure_fresh_sample_data()
     policies = await get_policies_by_customer_id(customer_id)
     return policies
+
+
+@app.get("/customers/state/{state}", response_model=List[Customer])
+async def get_customers_in_state(state: str):
+    await ensure_fresh_sample_data()
+    customers = await get_customers_by_state(state)
+    return customers

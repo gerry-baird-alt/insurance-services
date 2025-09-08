@@ -79,6 +79,28 @@ async def get_all_customers() -> List[Customer]:
         return customers
 
 
+async def get_customers_by_state(state: str) -> List[Customer]:
+    """Retrieve all customers in a specific state."""
+    async with await get_database() as db:
+        cursor = await db.execute("""
+            SELECT id, name, date_of_birth, email, address, state
+            FROM customers WHERE state = ?
+        """, (state,))
+        rows = await cursor.fetchall()
+        customers = []
+        for row in rows:
+            from datetime import date
+            customers.append(Customer(
+                id=row[0],
+                name=row[1],
+                date_of_birth=date.fromisoformat(row[2]),
+                email=row[3],
+                address=row[4],
+                state=row[5]
+            ))
+        return customers
+
+
 async def update_customer(customer_id: int, customer: Customer) -> bool:
     """Update a customer by ID. Returns True if successful, False if customer not found."""
     async with await get_database() as db:
