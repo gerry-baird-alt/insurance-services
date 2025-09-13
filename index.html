@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watsonx Insurance - Customer Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 280px;
+            height: 100vh;
+            background: linear-gradient(180deg, #2c3e50 0%, #34495e 100%);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+            position: fixed;
+            left: 0;
+            top: 0;
+            z-index: 1000;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-header h2 {
+            color: white;
+            font-size: 1.3rem;
+            font-weight: 300;
+            margin: 0;
+        }
+
+        .nav-menu {
+            padding: 20px 0;
+        }
+
+        .nav-item {
+            position: relative;
+            margin: 5px 0;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .nav-link:hover {
+            color: white;
+            background: rgba(52, 152, 219, 0.2);
+            border-left-color: #3498db;
+            transform: translateX(10px);
+        }
+
+        .nav-link:hover:before {
+            left: 100%;
+        }
+
+        .nav-link.active {
+            color: white;
+            background: rgba(52, 152, 219, 0.3);
+            border-left-color: #3498db;
+        }
+
+        .nav-icon {
+            margin-right: 15px;
+            font-size: 1.2rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .logout-section {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .logout-link {
+            display: flex;
+            align-items: center;
+            padding: 15px 25px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 1rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .logout-link:hover {
+            color: white;
+            background: rgba(231, 76, 60, 0.2);
+            border-color: #e74c3c;
+        }
+
+        .main-content {
+            flex: 1;
+            margin-left: 280px;
+            padding: 20px;
+            transition: margin-left 0.3s ease;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .panel {
+            padding: 30px;
+        }
+
+        .panel-title {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            color: white;
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ecf0f1;
+            font-size: 0.9rem;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        tr:hover {
+            background-color: #e3f2fd;
+            transform: scale(1.01);
+            transition: all 0.3s ease;
+        }
+
+        .policy-type {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .auto { background-color: #e74c3c; color: white; }
+        .home { background-color: #27ae60; color: white; }
+        .life { background-color: #f39c12; color: white; }
+        .health { background-color: #9b59b6; color: white; }
+
+        .premium {
+            font-weight: 600;
+            color: #27ae60;
+        }
+
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1001;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .mobile-toggle {
+                display: block;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .panel {
+                padding: 15px;
+            }
+            
+            th, td {
+                padding: 8px 6px;
+                font-size: 0.8rem;
+            }
+
+            .main-content {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <button class="mobile-toggle" onclick="toggleSidebar()">☰</button>
+    
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h2>Watsonx Insurance</h2>
+        </div>
+        
+        <nav class="nav-menu">
+            <div class="nav-item">
+                <a href="#" class="nav-link active">
+                    <span class="nav-icon">👥</span>
+                    Customer Search
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">📋</span>
+                    Policy Search
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">⚙️</span>
+                    Policy Admin
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="#" class="nav-link">
+                    <span class="nav-icon">🔍</span>
+                    Claim Search
+                </a>
+            </div>
+        </nav>
+        
+        <div class="logout-section">
+            <a href="#" class="logout-link">
+                <span class="nav-icon">🚪</span>
+                Logout
+            </a>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div class="container">
+        <div class="header">
+            <h1>Watsonx Insurance</h1>
+            <p>Your Trusted Insurance Partner</p>
+        </div>
+        
+        <div class="panel">
+            <h2 class="panel-title">Customer Policy Overview</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Customer ID</th>
+                            <th>Customer Name</th>
+                            <th>State</th>
+                            <th>Policy ID</th>
+                            <th>Policy Type</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Premium</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>WX-001</td>
+                            <td>Sarah Johnson</td>
+                            <td>California</td>
+                            <td>POL-2024-001</td>
+                            <td><span class="policy-type auto">Auto</span></td>
+                            <td>2024-01-15</td>
+                            <td>2025-01-15</td>
+                            <td class="premium">$1,245.00</td>
+                        </tr>
+                        <tr>
+                            <td>WX-002</td>
+                            <td>Michael Chen</td>
+                            <td>New York</td>
+                            <td>POL-2024-002</td>
+                            <td><span class="policy-type home">Home</span></td>
+                            <td>2024-02-01</td>
+                            <td>2025-02-01</td>
+                            <td class="premium">$2,890.00</td>
+                        </tr>
+                        <tr>
+                            <td>WX-003</td>
+                            <td>Emily Rodriguez</td>
+                            <td>Texas</td>
+                            <td>POL-2024-003</td>
+                            <td><span class="policy-type life">Life</span></td>
+                            <td>2024-01-20</td>
+                            <td>2044-01-20</td>
+                            <td class="premium">$450.00</td>
+                        </tr>
+                        <tr>
+                            <td>WX-004</td>
+                            <td>David Thompson</td>
+                            <td>Florida</td>
+                            <td>POL-2024-004</td>
+                            <td><span class="policy-type health">Health</span></td>
+                            <td>2024-03-01</td>
+                            <td>2025-03-01</td>
+                            <td class="premium">$3,240.00</td>
+                        </tr>
+                        <tr>
+                            <td>WX-005</td>
+                            <td>Lisa Anderson</td>
+                            <td>Illinois</td>
+                            <td>POL-2024-005</td>
+                            <td><span class="policy-type auto">Auto</span></td>
+                            <td>2024-02-15</td>
+                            <td>2025-02-15</td>
+                            <td class="premium">$1,680.00</td>
+                        </tr>
+                        <tr>
+                            <td>WX-006</td>
+                            <td>Robert Kim</td>
+                            <td>Washington</td>
+                            <td>POL-2024-006</td>
+                            <td><span class="policy-type home">Home</span></td>
+                            <td>2024-01-10</td>
+                            <td>2025-01-10</td>
+                            <td class="premium">$2,150.00</td>
+                        </tr>
+                        <tr>
+                            <td>WX-007</td>
+                            <td>Amanda Davis</td>
+                            <td>Colorado</td>
+                            <td>POL-2024-007</td>
+                            <td><span class="policy-type life">Life</span></td>
+                            <td>2024-02-28</td>
+                            <td>2044-02-28</td>
+                            <td class="premium">$625.00</td>
+                        </tr>
+                        <tr>
+                            <td>WX-008</td>
+                            <td>James Wilson</td>
+                            <td>Georgia</td>
+                            <td>POL-2024-008</td>
+                            <td><span class="policy-type health">Health</span></td>
+                            <td>2024-01-05</td>
+                            <td>2025-01-05</td>
+                            <td class="premium">$2,980.00</td>
+                        </tr>
+                        <tr>
+                            <td>WX-009</td>
+                            <td>Jennifer Martinez</td>
+                            <td>Arizona</td>
+                            <td>POL-2024-009</td>
+                            <td><span class="policy-type auto">Auto</span></td>
+                            <td>2024-03-10</td>
+                            <td>2025-03-10</td>
+                            <td class="premium">$1,390.00</td>
+                        </tr>
+                        <tr>
+                            <td>WX-010</td>
+                            <td>Christopher Brown</td>
+                            <td>North Carolina</td>
+                            <td>POL-2024-010</td>
+                            <td><span class="policy-type home">Home</span></td>
+                            <td>2024-02-20</td>
+                            <td>2025-02-20</td>
+                            <td class="premium">$2,475.00</td>
+                        </tr>
+                        <tr>
+                            <td>WX-011</td>
+                            <td>Michelle Taylor</td>
+                            <td>Virginia</td>
+                            <td>POL-2024-011</td>
+                            <td><span class="policy-type life">Life</span></td>
+                            <td>2024-01-25</td>
+                            <td>2044-01-25</td>
+                            <td class="premium">$720.00</td>
+                        </tr>
+                        <tr>
+                            <td>WX-012</td>
+                            <td>Daniel Lee</td>
+                            <td>Oregon</td>
+                            <td>POL-2024-012</td>
+                            <td><span class="policy-type health">Health</span></td>
+                            <td>2024-03-05</td>
+                            <td>2025-03-05</td>
+                            <td class="premium">$3,150.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+    
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('open');
+        }
+
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                if (window.innerWidth <= 1024) {
+                    document.getElementById('sidebar').classList.remove('open');
+                }
+            });
+        });
+
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 1024) {
+                document.getElementById('sidebar').classList.remove('open');
+            }
+        });
+    </script>
+</body>
+</html>
