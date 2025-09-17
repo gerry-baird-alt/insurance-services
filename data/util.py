@@ -111,7 +111,7 @@ async def init_sample_data():
             (12, -80, "pet", "310.00"),        # Started 80 days ago
             (13, -350, "bicycle", "460.00"),   # Started 350 days ago
             (13, -360, "boat", "1520.00")      # Started 360 days ago
-        ]
+      ]
         
         sample_policies = []
         for customer_id, start_offset, product, premium in policy_offsets:
