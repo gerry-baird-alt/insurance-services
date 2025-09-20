@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from typing import List, Optional
 from model import Customer, Policy
-from data import get_all_customers, get_customers_by_state, get_all_policies, get_policy_by_id, get_policies_by_customer_id, init_database, init_sample_data, ensure_fresh_sample_data
+from data import get_all_customers, get_customer_by_id, get_customers_by_state, get_all_policies, get_policy_by_id, get_policies_by_customer_id, init_database, init_sample_data, ensure_fresh_sample_data
 
 app = FastAPI()
 
@@ -16,6 +16,15 @@ async def startup_event():
 async def get_customers():
     await ensure_fresh_sample_data()
     return await get_all_customers()
+
+
+@app.get("/customers/{customer_id}", response_model=Customer)
+async def get_customer(customer_id: int):
+    await ensure_fresh_sample_data()
+    customer = await get_customer_by_id(customer_id)
+    if customer is None:
+        raise HTTPException(status_code=404, detail="Customer not found")
+    return customer
 
 
 @app.get("/policies", response_model=List[Policy])
