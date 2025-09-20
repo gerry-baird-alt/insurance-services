@@ -6,7 +6,7 @@
   },
   "servers": [
     {
-      "url": "https://insurance-services.1sp3v5eq7e8l.us-east.codeengine.appdomain.cloud"
+      "url": "https://l4-insurance.1d13bpwyy9q7.us-east.codeengine.appdomain.cloud"
     }
   ],
   "paths": {
