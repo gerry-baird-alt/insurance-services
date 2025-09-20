@@ -32,21 +32,38 @@
         }
       }
     },
-    "/policies": {
+    "/customers/{customer_id}": {
       "get": {
-        "summary": "Get Policies",
-        "operationId": "get_policies_policies_get",
+        "summary": "Get Customer",
+        "operationId": "get_customer_customers__customer_id__get",
+        "parameters": [
+          {
+            "name": "customer_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Customer Id"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful Response",
             "content": {
               "application/json": {
                 "schema": {
-                  "items": {
-                    "$ref": "#/components/schemas/Policy"
-                  },
-                  "type": "array",
-                  "title": "Response Get Policies Policies Get"
+                  "$ref": "#/components/schemas/Customer"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
