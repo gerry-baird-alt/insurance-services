@@ -27,11 +27,6 @@ async def get_customer(customer_id: int):
     return customer
 
 
-@app.get("/policies", response_model=List[Policy])
-async def get_policies():
-    await ensure_fresh_sample_data()
-    return await get_all_policies()
-
 
 @app.get("/policies/{policy_id}", response_model=Policy)
 async def get_policy(policy_id: int):
