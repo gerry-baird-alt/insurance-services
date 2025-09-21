@@ -123,6 +123,11 @@ async def init_sample_data():
         special_start = today + timedelta(days=-344)
         special_end = today + timedelta(days=20)
         sample_policies.append((2, special_start.isoformat(), special_end.isoformat(), "pet", "380.00"))
+
+        # Add special policy for customer 6: started 344 days ago, ends 20 days in future
+        special_start = today + timedelta(days=-354)
+        special_end = today + timedelta(days=10)
+        sample_policies.append((6, special_start.isoformat(), special_end.isoformat(), "boat", "450.00"))
         
         await db.executemany("""
             INSERT INTO policies (customer_id, start_date, end_date, product, premium)
