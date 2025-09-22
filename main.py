@@ -66,19 +66,3 @@ async def get_customer_total_premium(customer_id: int):
     
     return {"customer_id": customer_id, "total_premium": total_premium}
 
-
-@app.get("/policies/{policy_id}/days-to-end")
-async def get_policy_days_to_end(policy_id: int):
-    await ensure_fresh_sample_data()
-    
-    policy = await get_policy_by_id(policy_id)
-    if policy is None:
-        raise HTTPException(status_code=404, detail="Policy not found")
-    
-    today = date.today()
-    days_to_end = (policy.end_date - today).days
-    
-    return {
-        "policy_id": policy_id,
-        "days_to_end": days_to_end
-    }
