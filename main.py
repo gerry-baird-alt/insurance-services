@@ -14,13 +14,19 @@ async def startup_event():
     await init_sample_data()
 
 
-@app.get("/customers", response_model=List[Customer])
+@app.get("/customers",
+        summary="Customers",
+        description="Retrieves a list of all customers.",
+        response_model=List[Customer])
 async def get_customers():
     await ensure_fresh_sample_data()
     return await get_all_customers()
 
 
-@app.get("/customers/{customer_id}", response_model=Customer)
+@app.get("/customers/{customer_id}",
+         summary="Customers by ID",
+         description="Retrieves a specific customers.",
+         response_model=Customer)
 async def get_customer(customer_id: int):
     await ensure_fresh_sample_data()
     customer = await get_customer_by_id(customer_id)
@@ -30,7 +36,10 @@ async def get_customer(customer_id: int):
 
 
 
-@app.get("/policies/{policy_id}", response_model=Policy)
+@app.get("/policies/{policy_id}",
+         summary="Polices by ID",
+         description="Retrieves policy information for a specific policy.",
+         response_model=Policy)
 async def get_policy(policy_id: int):
     await ensure_fresh_sample_data()
     policy = await get_policy_by_id(policy_id)
@@ -39,21 +48,19 @@ async def get_policy(policy_id: int):
     return policy
 
 
-@app.get("/customers/{customer_id}/policies", response_model=List[Policy])
-async def get_customer_policies(customer_id: int):
-    await ensure_fresh_sample_data()
-    policies = await get_policies_by_customer_id(customer_id)
-    return policies
-
-
-@app.get("/customers/state/{state}", response_model=List[Customer])
+@app.get("/customers/state/{state}",
+         summary="Customers by State",
+         description="Retrieves a list of customers in a specific state.",
+         response_model=List[Customer])
 async def get_customers_in_state(state: str):
     await ensure_fresh_sample_data()
     customers = await get_customers_by_state(state)
     return customers
 
 
-@app.get("/customers/{customer_id}/total-premium")
+@app.get("/customers/{customer_id}/total-premium",
+         summary="Total premium",
+         description="Calculates the total value of policies for a customer.")
 async def get_customer_total_premium(customer_id: int):
     await ensure_fresh_sample_data()
     
@@ -66,3 +73,22 @@ async def get_customer_total_premium(customer_id: int):
     
     return {"customer_id": customer_id, "total_premium": total_premium}
 
+
+@app.get("/policies/{policy_id}/days-to-end",
+         summary="Calculate days left on policy",
+         description="Calculates the number of days before a policy expires."
+         )
+async def get_policy_days_to_end(policy_id: int):
+    await ensure_fresh_sample_data()
+
+    policy = await get_policy_by_id(policy_id)
+    if policy is None:
+        raise HTTPException(status_code=404, detail="Policy not found")
+
+    today = date.today()
+    days_to_end = (policy.end_date - today).days
+
+    return {
+        "policy_id": policy_id,
+        "days_to_end": days_to_end
+    }
