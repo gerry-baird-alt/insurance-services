@@ -12,7 +12,8 @@
   "paths": {
     "/customers": {
       "get": {
-        "summary": "Get Customers",
+        "summary": "Customers",
+        "description": "Retrieves a list of all customers.",
         "operationId": "get_customers_customers_get",
         "responses": {
           "200": {
@@ -34,7 +35,8 @@
     },
     "/customers/{customer_id}": {
       "get": {
-        "summary": "Get Customer",
+        "summary": "Customers by ID",
+        "description": "Retrieves a specific customers.",
         "operationId": "get_customer_customers__customer_id__get",
         "parameters": [
           {
@@ -73,7 +75,8 @@
     },
     "/policies/{policy_id}": {
       "get": {
-        "summary": "Get Policy",
+        "summary": "Polices by ID",
+        "description": "Retrieves policy information for a specific policy.",
         "operationId": "get_policy_policies__policy_id__get",
         "parameters": [
           {
@@ -110,52 +113,10 @@
         }
       }
     },
-    "/customers/{customer_id}/policies": {
-      "get": {
-        "summary": "Get Customer Policies",
-        "operationId": "get_customer_policies_customers__customer_id__policies_get",
-        "parameters": [
-          {
-            "name": "customer_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "title": "Customer Id"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Successful Response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Policy"
-                  },
-                  "title": "Response Get Customer Policies Customers  Customer Id  Policies Get"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/customers/state/{state}": {
       "get": {
-        "summary": "Get Customers In State",
+        "summary": "Customers by State",
+        "description": "Retrieves a list of customers in a specific state.",
         "operationId": "get_customers_in_state_customers_state__state__get",
         "parameters": [
           {
@@ -198,7 +159,8 @@
     },
     "/customers/{customer_id}/total-premium": {
       "get": {
-        "summary": "Get Customer Total Premium",
+        "summary": "Total premium",
+        "description": "Calculates the total value of policies for a customer.",
         "operationId": "get_customer_total_premium_customers__customer_id__total_premium_get",
         "parameters": [
           {
@@ -208,6 +170,44 @@
             "schema": {
               "type": "integer",
               "title": "Customer Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/policies/{policy_id}/days-to-end": {
+      "get": {
+        "summary": "Calculate days left on policy",
+        "description": "Calculates the number of days before a policy expires.",
+        "operationId": "get_policy_days_to_end_policies__policy_id__days_to_end_get",
+        "parameters": [
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Policy Id"
             }
           }
         ],
