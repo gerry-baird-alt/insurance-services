@@ -196,3 +196,6 @@ fabric.properties
 /.idea/modules.xml
 /.idea/inspectionProfiles/profiles_settings.xml
 /.idea/wxo_l3_services.iml
+
+# Claude Code directory
+.claude/**

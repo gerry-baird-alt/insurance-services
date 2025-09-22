@@ -232,6 +232,43 @@
           }
         }
       }
+    },
+    "/policies/{policy_id}/days-to-end": {
+      "get": {
+        "summary": "Get Policy Days To End",
+        "operationId": "get_policy_days_to_end_policies__policy_id__days_to_end_get",
+        "parameters": [
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Policy Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
