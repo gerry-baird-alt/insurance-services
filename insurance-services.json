@@ -113,6 +113,50 @@
         }
       }
     },
+    "/customers/{customer_id}/policies": {
+      "get": {
+        "summary": "Customer policies",
+        "description": "Retrieves policy information for a specific customer.",
+        "operationId": "get_customer_policies_customers__customer_id__policies_get",
+        "parameters": [
+          {
+            "name": "customer_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "title": "Customer Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Policy"
+                  },
+                  "title": "Response Get Customer Policies Customers  Customer Id  Policies Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/customers/state/{state}": {
       "get": {
         "summary": "Customers by State",

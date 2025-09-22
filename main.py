@@ -47,6 +47,14 @@ async def get_policy(policy_id: int):
         raise HTTPException(status_code=404, detail="Policy not found")
     return policy
 
+@app.get("/customers/{customer_id}/policies",
+        summary="Customer policies",
+        description="Retrieves policy information for a specific customer.",
+        response_model=List[Policy])
+async def get_customer_policies(customer_id: int):
+    await ensure_fresh_sample_data()
+    policies = await get_policies_by_customer_id(customer_id)
+    return policies
 
 @app.get("/customers/state/{state}",
          summary="Customers by State",
