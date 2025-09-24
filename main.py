@@ -5,7 +5,10 @@ from datetime import date
 from model import Customer, Policy
 from data import get_all_customers, get_customer_by_id, get_customers_by_state, get_all_policies, get_policy_by_id, get_policies_by_customer_id, init_database, init_sample_data, ensure_fresh_sample_data
 
-app = FastAPI()
+app = FastAPI(
+    title="watsonx Insurance",
+    description="APis for watsonx Insurance services.",
+    version="1.0")
 
 
 @app.on_event("startup")
